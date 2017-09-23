@@ -26,27 +26,27 @@
 
 ;;; Commentary:
 
-;; $B$3$l$O!"(BSDIC$B7A<0<-=q$r8!:w$9$k$?$a$N%i%$%V%i%j$G$9!#<!$N4X?t$+$i@.(B
-;; $B$j$^$9!#(B
+;; これは、SDIC形式辞書を検索するためのライブラリです。次の関数から成
+;; ります。
 
-;;     sdicf-open           - SDIC $B<-=q$N%*!<%W%s(B
-;;     sdicf-close          - SDIC $B<-=q$N%/%m!<%:(B
-;;     sdicf-search         - SDIC $B<-=q$+$i8!:w(B
-;;     sdicf-entry-headword - $B%(%s%H%j$N8+=P$78l$rF@$k(B
-;;     sdicf-entry-keywords - $B%(%s%H%j$N8!:w%-!<$N%j%9%H$rF@$k(B
-;;     sdicf-entry-text     - $B%(%s%H%j$NK\J8$rF@$k(B
+;;     sdicf-open           - SDIC 辞書のオープン
+;;     sdicf-close          - SDIC 辞書のクローズ
+;;     sdicf-search         - SDIC 辞書から検索
+;;     sdicf-entry-headword - エントリの見出し語を得る
+;;     sdicf-entry-keywords - エントリの検索キーのリストを得る
+;;     sdicf-entry-text     - エントリの本文を得る
 
-;; $B$=$l$>$l$N4X?t$N>\:Y$O!"4X?t$N@bL@J8;zNs$K5-=R$5$l$F$$$^$9!#(B
+;; それぞれの関数の詳細は、関数の説明文字列に記述されています。
 
 
 ;;; Note:
- 
-;; * GNU Emacs 19.30 $B0J9_$G$"$l$P!"(B`auto-compression-mode' $B$rM-8z$K$9$k(B
-;;   $B$3$H$G!"(B`direct' $BJ}<0$G05=L$7$?<-=q$rMQ$$$k$3$H$,=PMh$k!#E83+$O<+(B
-;;   $BF0$G9T$J$o$l$k$?$a!"FCJL$J@_Dj$OI,MW$"$j$^$;$s!#(B
-;; 
-;; * $BB.EY=E;k$N$?$a(B `save-match-data' $B$K$h$k0lCW%G!<%?$NB`Hr$H2sI|$O0l(B
-;;   $B@Z$7$F$$$^$;$s!#(B
+
+;; * GNU Emacs 19.30 以降であれば、`auto-compression-mode' を有効にする
+;;   ことで、`direct' 方式で圧縮した辞書を用いることが出来る。展開は自
+;;   動で行なわれるため、特別な設定は必要ありません。
+;;
+;; * 速度重視のため `save-match-data' による一致データの退避と回復は一
+;;   切していません。
 
 
 
@@ -111,15 +111,15 @@
   '((array sdicf-array-available sdicf-array-init sdicf-array-quit sdicf-array-search)
     (grep sdicf-grep-available sdicf-grep-init sdicf-grep-quit sdicf-grep-search)
     (direct sdicf-direct-available sdicf-direct-init sdicf-direct-quit sdicf-direct-search))
-  "$BMxMQ$G$-$k(B strategy $B$NO"A[G[Ns(B
-$BG[Ns$N3FMWAG$O!"(B
-    strategy $B$N%7%s%\%k(B
-    strategy $B$NMxMQ2DG=@-$r8!::$9$k4X?t(B
-    strategy $B$r=i4|2=$9$k4X?t(B
-    strategy $B$r=*N;$9$k4X?t(B
-    strategy $B$r;H$C$F8!:w$9$k4X?t(B
-$B$N(B4$B$D$NMWAG$+$i$J$k%j%9%H$H$J$C$F$$$k!#(Bstrategy $B$N<+F0H=Dj$r9T$&$H$-$O!"(B
-$B$3$NO"A[G[Ns$K@h$KEPO?$5$l$F$$$k(B strategy $B$,;H$o$l$k!#(B")
+  "利用できる strategy の連想配列
+配列の各要素は、
+    strategy のシンボル
+    strategy の利用可能性を検査する関数
+    strategy を初期化する関数
+    strategy を終了する関数
+    strategy を使って検索する関数
+の4つの要素からなるリストとなっている。strategy の自動判定を行うときは、
+この連想配列に先に登録されている strategy が使われる。")
 
 
 
@@ -135,32 +135,32 @@ Value is nil if OBJECT is not a buffer or if it has been killed."
     (and object (bufferp object) (buffer-name object))))
 
 (defsubst sdicf-object-p (sdic)
-  "$B<-=q%*%V%8%'%/%H$+$I$&$+8!::$9$k(B"
+  "辞書オブジェクトかどうか検査する"
   (and (vectorp sdic) (eq 'SDIC (aref sdic 0))))
 
 (defsubst sdicf-entry-p (entry)
   (and (stringp entry) (string-match "^<.>\\([^<]+\\)</.>" entry)))
 
 (defsubst sdicf-get-filename (sdic)
-  "$B<-=q%*%V%8%'%/%H$+$i%U%!%$%kL>$rF@$k(B"
+  "辞書オブジェクトからファイル名を得る"
   (aref sdic 1))
 
 (defsubst sdicf-get-coding-system (sdic)
-  "$B<-=q%*%V%8%'%/%H$+$i(B coding-system $B$rF@$k(B"
+  "辞書オブジェクトから coding-system を得る"
   (aref sdic 2))
 
 (defsubst sdicf-get-strategy (sdic)
-  "$B<-=q%*%V%8%'%/%H$+$i(B strategy $B$rF@$k(B"
+  "辞書オブジェクトから strategy を得る"
   (aref sdic 3))
 
 (defsubst sdicf-get-buffer (sdic)
-  "$B<-=q%*%V%8%'%/%H$+$i8!:wMQ%P%C%U%!$rF@$k(B"
+  "辞書オブジェクトから検索用バッファを得る"
   (aref sdic 4))
 
 (defun sdicf-common-init (sdic) "\
-$B6&DL$N<-=q=i4|2=4X?t(B
-$B:n6HMQ%P%C%U%!$,B8:_$9$k$3$H$r3NG'$7!"$J$1$l$P?7$7$/@8@.$9$k!#:n6HMQ%P%C(B
-$B%U%!$rJV$9!#(B"
+共通の辞書初期化関数
+作業用バッファが存在することを確認し、なければ新しく生成する。作業用バッ
+ファを返す。"
   (or (and (sdicf-buffer-live-p (sdicf-get-buffer sdic))
 	   (sdicf-get-buffer sdic))
       (let ((buf (generate-new-buffer (format " *sdic %s*" (sdicf-get-filename sdic)))))
@@ -168,13 +168,13 @@ Value is nil if OBJECT is not a buffer or if it has been killed."
 	(aset sdic 4 buf))))
 
 (defun sdicf-common-quit (sdic) "\
-$B6&DL$N<-=q=*N;4X?t(B"
+共通の辞書終了関数"
   (if (sdicf-buffer-live-p (sdicf-get-buffer sdic)) (kill-buffer (sdicf-get-buffer sdic))))
 
 (defsubst sdicf-search-internal () "\
-$B8=:_9T$r%A%'%C%/$7!"%(%s%H%j$J$i$P8=:_9T$NFbMF$r(B entries $B$K2C$($k!#(B
-$B%]%$%s%H$r9T$N@hF,$K0\F0$7$F$*$+$J$1$l$P$J$i$J$$!#4X?t$N<B9T8e!"%]%$%s(B
-$B%H$O<!$N9TF,$K0\F0$9$k!#(B"
+現在行をチェックし、エントリならば現在行の内容を entries に加える。
+ポイントを行の先頭に移動しておかなければならない。関数の実行後、ポイン
+トは次の行頭に移動する。"
   (if (eq (following-char) ?<)
       (progn
 	(setq entries (cons (buffer-substring (point) (progn (end-of-line) (point))) entries))
@@ -182,8 +182,8 @@ Value is nil if OBJECT is not a buffer or if it has been killed."
     (forward-line)))
 
 (defun sdicf-encode-string (string) "\
-STRING $B$r%(%s%3!<%I$9$k(B
-$B%(%s%3!<%I$7$?J8;zNs$rJV$9(B"
+STRING をエンコードする
+エンコードした文字列を返す"
   (let ((start 0) ch list)
     (while (string-match "[&<>\n]" string start)
       (setq ch (aref string (match-beginning 0))
@@ -195,8 +195,8 @@ STRING $B$r%(%s%3!<%I$9$k(B
     (eval (cons 'concat (nreverse (cons (substring string start) list))))))
 
 (defun sdicf-decode-string (string) "\
-STRING $B$r%G%3!<%I$9$k(B
-$B%G%3!<%I$7$?J8;zNs$rJV$9(B"
+STRING をデコードする
+デコードした文字列を返す"
   (let ((start 0) list)
     (while (string-match "&\\(\\(lt\\)\\|\\(gt\\)\\|\\(lf\\)\\|\\(amp\\)\\);" string start)
       (setq list (cons (if (match-beginning 2) "<"
@@ -207,15 +207,15 @@ STRING $B$r%G%3!<%I$9$k(B
     (eval (cons 'concat (nreverse (cons (substring string start) list))))))
 
 (defun sdicf-insert-file-contents (filename coding-system &optional visit beg end replace) "\
-CODING-SYSTEM $B$rL@<(E*$K;XDj$7$F(B insert-file-contents $B$r8F$S=P$9(B
-CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B insert-file-contents $B$HF1$8(B"
+CODING-SYSTEM を明示的に指定して insert-file-contents を呼び出す
+CODING-SYSTEM 以外の引数の意味は insert-file-contents と同じ"
   (let ((coding-system-for-read coding-system)
 	(file-coding-system-for-read coding-system))
     (insert-file-contents filename visit beg end replace)))
 
 (defun sdicf-call-process (program coding-system &optional infile buffer display &rest args) "\
-CODING-SYSTEM $B$rL@<(E*$K;XDj$7$F(B call-process $B$r8F$S=P$9(B
-CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B call-process $B$HF1$8(B"
+CODING-SYSTEM を明示的に指定して call-process を呼び出す
+CODING-SYSTEM 以外の引数の意味は call-process と同じ"
   (let ((default-directory sdicf-default-directory)
 	(coding-system-for-read coding-system)
 	(coding-system-for-write coding-system)
@@ -226,8 +226,8 @@ CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B call-process $B$HF1$8(B"
     (apply 'call-process program infile buffer display args)))
 
 (defun sdicf-start-process (name buffer program coding-system &rest args) "\
-start-process $B$r<B9T$7$?8e!"@8@.$5$l$?%W%m%;%9$K(B CODING-SYSTEM $B$r@_Dj$9$k(B
-CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B start-process $B$HF1$8(B"  
+start-process を実行した後、生成されたプロセスに CODING-SYSTEM を設定する
+CODING-SYSTEM 以外の引数の意味は start-process と同じ"
   (let* ((default-directory sdicf-default-directory)
 	 (proc (apply 'start-process name buffer program args)))
     (if (fboundp 'set-process-coding-system)
@@ -260,11 +260,11 @@ CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B start-process $B$HF1$8(B"
 (defalias 'sdicf-direct-quit 'sdicf-common-quit)
 
 (defun sdicf-direct-search (sdic pattern &optional case regexp) "\
-$B8!:wBP>]$N%U%!%$%k$r%P%C%U%!$KFI$_9~$s$G8!:w$r9T$&(B
+検索対象のファイルをバッファに読み込んで検索を行う
 
-$B8+$D$+$C$?%(%s%H%j$N%j%9%H$rJV$9!#(BCASE $B$,(B nil $B$J$i$P!"BgJ8;z>.J8;z$N0c(B
-$B$$$r6hJL$7$F8!:w$9$k!#(BREGEXP $B$,(B Non-nil $B$J$i$P!"(BPATTERN $B$r@55,I=8=$H8+(B
-$B$J$7$F8!:w$9$k!#(B"
+見つかったエントリのリストを返す。CASE が nil ならば、大文字小文字の違
+いを区別して検索する。REGEXP が Non-nil ならば、PATTERN を正規表現と見
+なして検索する。"
   (sdicf-direct-init sdic)
   (save-excursion
     (set-buffer (sdicf-get-buffer sdic))
@@ -298,12 +298,12 @@ CODING-SYSTEM $B0J30$N0z?t$N0UL#$O(B start-process $B$HF1$8(B"
 (defalias 'sdicf-grep-quit 'sdicf-common-quit)
 
 (defun sdicf-grep-search (sdic pattern &optional case regexp) "\
-fgrep / egrep $B$^$?$O(B grep $B$r;H$C$F8!:w$r9T$&(B
+fgrep / egrep または grep を使って検索を行う
 
-$B8+$D$+$C$?%(%s%H%j$N%j%9%H$rJV$9!#(BCASE $B$,(B nil $B$J$i$P!"BgJ8;z>.J8;z$N0c(B
-$B$$$r6hJL$7$F8!:w$9$k!#(BREGEXP $B$,(B nil $B$J$i$P(B sdicf-fgrep-command $B$G;XDj(B
-$B$5$l$?%3%^%s%I$r;H$C$F8!:w$9$k!#(BREGEXP $B$,(B Non-nil $B$J$i$P(B 
-sdicf-egrep-command $B$G;XDj$5$l$?%3%^%s%I$r;H$&!#(B"
+見つかったエントリのリストを返す。CASE が nil ならば、大文字小文字の違
+いを区別して検索する。REGEXP が nil ならば sdicf-fgrep-command で指定
+されたコマンドを使って検索する。REGEXP が Non-nil ならば
+sdicf-egrep-command で指定されたコマンドを使う。"
   (sdicf-grep-init sdic)
   (save-excursion
     (set-buffer (sdicf-get-buffer sdic))
@@ -363,7 +363,7 @@ sdicf-egrep-command $B$G;XDj$5$l$?%3%^%s%I$r;H$&!#(B"
 	(kill-buffer (sdicf-get-buffer sdic)))))
 
 (defun sdicf-array-send-string (proc string) "\
-$B;XDj$5$l$?J8;zNs(B STRING $B$r%3%^%s%I$H$7$F(B PROC $B$KEO$7$F%W%m%s%W%H$,8=$l$k$^$GBT$D4X?t(B"
+指定された文字列 STRING をコマンドとして PROC に渡してプロンプトが現れるまで待つ関数"
   (save-excursion
     (let ((sdicf-array-wait-prompt-flag t))
       (set-buffer (process-buffer proc))
@@ -372,9 +372,9 @@ sdicf-egrep-command $B$G;XDj$5$l$?%3%^%s%I$r;H$&!#(B"
       (while sdicf-array-wait-prompt-flag (accept-process-output proc)))))
 
 (defun sdicf-array-wait-prompt (proc string) "\
-$B%W%m%s%W%H(B ok $B$,8=$l$?$3$H$r8!CN$7$F!"(Bsdicf-array-wait-prompt-flag $B$r(B nil $B$K$9$k%U%#%k%?4X?t(B"
+プロンプト ok が現れたことを検知して、sdicf-array-wait-prompt-flag を nil にするフィルタ関数"
   (save-excursion
-    (save-match-data ; Emacs-19.34 $B0J9_$O<+F0E*$K8!:w7k2L$NBTHr(B/$B2sI|$,9T$o$l$k$N$GITMW(B
+    (save-match-data ; Emacs-19.34 以降は自動的に検索結果の待避/回復が行われるので不要
       (set-buffer (process-buffer proc))
       (goto-char (process-mark proc))
       (insert string)
@@ -386,12 +386,12 @@ sdicf-egrep-command $B$G;XDj$5$l$?%3%^%s%I$r;H$&!#(B"
       )))
 
 (defun sdicf-array-search (sdic pattern &optional case regexp) "\
-array $B$r;H$C$F8!:w$r9T$&(B
+array を使って検索を行う
 
-$B8+$D$+$C$?%(%s%H%j$N%j%9%H$rJV$9!#(Barray $B$O@55,I=8=8!:w$*$h$SBgJ8;z>.J8(B
-$B;z$N0c$$$r6hJL$7$J$$8!:w$O=PMh$J$$!#=>$C$F!"(BCASE $B$,(B Non-nil $B$N>l9g$O!"(B
-$BBgJ8;z>.J8;z$r6hJL$7$F8!:w$7$?>l9g$N7k2L$rJV$9!#(BREGEXP $B$,(B Non-nil $B$N>l(B
-$B9g$O6u$j%9%H$rJV$9!#(B"
+見つかったエントリのリストを返す。array は正規表現検索および大文字小文
+字の違いを区別しない検索は出来ない。従って、CASE が Non-nil の場合は、
+大文字小文字を区別して検索した場合の結果を返す。REGEXP が Non-nil の場
+合は空りストを返す。"
   (sdicf-array-init sdic)
   (if regexp
       (signal 'sdicf-invalid-method '(regexp))
@@ -421,25 +421,25 @@ array $B$r;H$C$F8!:w$r9T$&(B
 ;;;------------------------------------------------------------
 
 (defun sdicf-open (filename &optional coding-system strategy) "\
-SDIC$B7A<0$N<-=q$r%*!<%W%s$9$k(B
+SDIC形式の辞書をオープンする
 
-FILENAME $B$O<-=q$N%U%!%$%kL>!#(BSTRATEGY $B$O8!:w$r9T$J$&J}<0$r;XDj$9$k0z?t(B
-$B$G!"<!$N$$$:$l$+$NCM$r<h$k!#(B
+FILENAME は辞書のファイル名。STRATEGY は検索を行なう方式を指定する引数
+で、次のいずれかの値を取る。
 
-    `direct' - $B<-=q$r%P%C%U%!$KFI$s$GD>@\8!:w!#(B
-    `grep'   - grep $B%3%^%s%I$rMQ$$$F8!:w!#(B
-    `array'  - SUFARY $B$rMQ$$$?9bB.8!:w!#(B
+    `direct' - 辞書をバッファに読んで直接検索。
+    `grep'   - grep コマンドを用いて検索。
+    `array'  - SUFARY を用いた高速検索。
 
-STRATEGY $B$,>JN,$5$l$?>l9g$O(B sdicf-strategy-alist $B$NCM$r;H$C$F<+F0E*$K(B
-$BH=Dj$9$k!#(BCODING-SYSTEM $B$,>JN,$5$l$?>l9g$O!"(Bsdicf-default-coding-system
-$B$NCM$r;H$&!#(B
+STRATEGY が省略された場合は sdicf-strategy-alist の値を使って自動的に
+判定する。CODING-SYSTEM が省略された場合は、sdicf-default-coding-system
+の値を使う。
 
-SDIC $B<-=q%*%V%8%'%/%H$O(B CAR $B$,(B `SDIC' $B$N%Y%/%?$G$"$k!#0J2<$N(B4$B$D$NMWAG(B
-$B$r;}$D!#(B
-    $B!&%U%!%$%kL>(B
-    $B!&<-=q$N(B coding-system
-    $B!&(Bstrategy
-    $B!&:n6HMQ%P%C%U%!(B
+SDIC 辞書オブジェクトは CAR が `SDIC' のベクタである。以下の4つの要素
+を持つ。
+    ・ファイル名
+    ・辞書の coding-system
+    ・strategy
+    ・作業用バッファ
 "
   (let ((sdic (vector 'SDIC filename (or coding-system sdicf-default-coding-system) nil nil)))
     (aset sdic 3 (if strategy
@@ -458,28 +458,28 @@ SDIC $B<-=q%*%V%8%'%/%H$O(B CAR $B$,(B `SDIC' $B$N%Y%/%?$G$"$k!#0J2<$N(B4
     sdic))
 
 (defun sdicf-close (sdic)
-  "SDIC$B7A<0$N<-=q$r%/%m!<%:$9$k(B"
+  "SDIC形式の辞書をクローズする"
   (or (sdicf-object-p sdic)
       (signal 'wrong-type-argument (list 'sdicf-object-p sdic)))
   (funcall (nth 3 (assq (sdicf-get-strategy sdic) sdicf-strategy-alist)) sdic))
 
 (defun sdicf-search (sdic method word) "\
-SDIC$B7A<0$N<-=q$+$i(B WORD $B$r%-!<$H$7$F8!:w$r9T$&(B
+SDIC形式の辞書から WORD をキーとして検索を行う
 
-$B8+IU$+$C$?%(%s%H%j$N%j%9%H$rJV$9!#(BMETHOD $B$O8!:wK!$G!"<!$N$$$:$l$+$NCM(B
-$B$r<h$k!#(B
+見付かったエントリのリストを返す。METHOD は検索法で、次のいずれかの値
+を取る。
 
-    `prefix' - $BA0J}0lCW8!:w(B
-    `suffix' - $B8eJ}0lCW8!:w(B
-    `exact'  - $B40A40lCW8!:w(B
-    `text'   - $BA4J88!:w(B
-    `regexp' - $B@55,I=8=8!:w(B
+    `prefix' - 前方一致検索
+    `suffix' - 後方一致検索
+    `exact'  - 完全一致検索
+    `text'   - 全文検索
+    `regexp' - 正規表現検索
 
-$BA0J}0lCW8!:w!"8eJ}0lCW8!:w!"40A40lCW8!:w$N>l9g$OBgJ8;z(B/$B>.J8;z$r6hJL$7(B
-$B$F8!:w$r9T$&!#A4J88!:w$*$h$S@55,I=8=8!:w$N>l9g$O!"(Bcase-fold-search $B$N(B
-$BCM$K$h$C$FJQ2=$9$k!#$?$@$7!"(Bstrategy $B$K$h$C$F$O!";XDj$5$l$?8!:wJ}<0$K(B
-$BBP1~$7$F$$$J$$>l9g$,$"$k$N$G!"Cm0U$9$k$3$H!#BP1~$7$F$$$J$$>l9g$NJV$jCM(B
-$B$O!"(Bstrategy $B$K$h$k!#(B"
+前方一致検索、後方一致検索、完全一致検索の場合は大文字/小文字を区別し
+て検索を行う。全文検索および正規表現検索の場合は、case-fold-search の
+値によって変化する。ただし、strategy によっては、指定された検索方式に
+対応していない場合があるので、注意すること。対応していない場合の返り値
+は、strategy による。"
   (or (sdicf-object-p sdic)
       (signal 'wrong-type-argument (list 'sdicf-object-p sdic)))
   (or (stringp word)
@@ -498,14 +498,14 @@ SDIC$B7A<0$N<-=q$+$i(B WORD $B$r%-!<$H$7$F8!:w$r9T$&(B
 	     (eq method 'regexp))))
 
 (defun sdicf-entry-headword (entry)
-  "$B%(%s%H%j(B ENTRY $B$N8+=P$78l$rJV$9!#(B"
+  "エントリ ENTRY の見出し語を返す。"
   (or (sdicf-entry-p entry)
       (signal 'wrong-type-argument (list 'sdicf-entry-p entry)))
   (sdicf-decode-string (substring entry (match-beginning 1) (match-end 1))))
 
 (defun sdicf-entry-keywords (entry &optional add-headword) "\
-$B%(%s%H%j(B ENTRY $B$N8!:w%-!<$N%j%9%H$rJV$9(B
-ADD-HEADWORD $B$,(B Non-nil $B$N>l9g$O8!:w%-!<$K8+=P$78l$r2C$($?%j%9%H$rJV$9(B"
+エントリ ENTRY の検索キーのリストを返す
+ADD-HEADWORD が Non-nil の場合は検索キーに見出し語を加えたリストを返す"
   (or (sdicf-entry-p entry)
       (signal 'wrong-type-argument (list 'sdicf-entry-p entry)))
   (let ((start (match-end 0))
@@ -517,7 +517,7 @@ ADD-HEADWORD $B$,(B Non-nil $B$N>l9g$O8!:w%-!<$K8+=P$78l$r2C$($?%j%9%H$rJV$9
     (nreverse keywords)))
 
 (defun sdicf-entry-text (entry)
-  "$B%(%s%H%j(B ENTRY $B$NK\J8$rJV$9!#(B"
+  "エントリ ENTRY の本文を返す。"
   (or (stringp entry)
       (signal 'wrong-type-argument (list 'stringp entry)))
   (sdicf-decode-string (substring entry (string-match "[^>]*$" entry))))

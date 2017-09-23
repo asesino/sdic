@@ -23,105 +23,105 @@
 
 ;;; Commentary:
 
-;; ¤³¤Î¥Õ¥¡¥¤¥ë¤Ï¡¢GENE¼­½ñ¤ò±ÑÏÂ¼­½ñ¤È¤·¤Æ»È¤¤¡¢EDICT¼­½ñ¤òÏÂ±Ñ¼­½ñ¤È
-;; ¤·¤Æ»È¤¦¤¿¤á¤ÎÀßÄê¤ò¹Ô¤Ê¤¦ Emacs-Lisp ¥×¥í¥°¥é¥à¤Ç¤¹¡£¼ç¤Ë Windows 
-;; ´Ä¶­¤ÇÍøÍÑ¤¹¤ë¤³¤È¤òÁÛÄê¤·¤Æ¤¤¤Ş¤¹¡£UNIX ´Ä¶­¤Ç¥¤¥ó¥¹¥È¡¼¥ë¤ò¹Ô¤Ê¤¦
-;; ¾ì¹ç¤Ï¡¢ÉáÄÌ¤Ë configure ¤È make ¤ò»È¤Ã¤Æ²¼¤µ¤¤¡£
+;; ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€GENEè¾æ›¸ã‚’è‹±å’Œè¾æ›¸ã¨ã—ã¦ä½¿ã„ã€EDICTè¾æ›¸ã‚’å’Œè‹±è¾æ›¸ã¨
+;; ã—ã¦ä½¿ã†ãŸã‚ã®è¨­å®šã‚’è¡Œãªã† Emacs-Lisp ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§ã™ã€‚ä¸»ã« Windows
+;; ç’°å¢ƒã§åˆ©ç”¨ã™ã‚‹ã“ã¨ã‚’æƒ³å®šã—ã¦ã„ã¾ã™ã€‚UNIX ç’°å¢ƒã§ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚’è¡Œãªã†
+;; å ´åˆã¯ã€æ™®é€šã« configure ã¨ make ã‚’ä½¿ã£ã¦ä¸‹ã•ã„ã€‚
 ;;
-;; (1) GENE¼­½ñ¤Î¥Ç¡¼¥¿ gene95.lzh ¤Ş¤¿¤Ï gene95.tar.gz ¤òÅ¸³«¤·¤Æ¡¢
-;;     gene.txt ¤ò¤³¤Î¥Õ¥¡¥¤¥ë¤ÈÆ±¤¸¥Ç¥£¥ì¥¯¥È¥ê¤ËÃÖ¤¤¤Æ²¼¤µ¤¤¡£
+;; (1) GENEè¾æ›¸ã®ãƒ‡ãƒ¼ã‚¿ gene95.lzh ã¾ãŸã¯ gene95.tar.gz ã‚’å±•é–‹ã—ã¦ã€
+;;     gene.txt ã‚’ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨åŒã˜ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ç½®ã„ã¦ä¸‹ã•ã„ã€‚
 ;;
-;; (2) EDICT¼­½ñ¤Î¥Ç¡¼¥¿ edict.gz ¤òÅ¸³«¤·¤Æ¡¢edict ¤ò¤³¤Î¥Õ¥¡¥¤¥ë¤ÈÆ±
-;;     ¤¸¥Ç¥£¥ì¥¯¥È¥ê¤ËÃÖ¤¤¤Æ²¼¤µ¤¤¡£
+;; (2) EDICTè¾æ›¸ã®ãƒ‡ãƒ¼ã‚¿ edict.gz ã‚’å±•é–‹ã—ã¦ã€edict ã‚’ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¨åŒ
+;;     ã˜ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ç½®ã„ã¦ä¸‹ã•ã„ã€‚
 ;;
-;; (3) °Ê²¼¤Î¥³¥Ş¥ó¥É¤ò¼Â¹Ô¤·¤Æ²¼¤µ¤¤¡£
+;; (3) ä»¥ä¸‹ã®ã‚³ãƒãƒ³ãƒ‰ã‚’å®Ÿè¡Œã—ã¦ä¸‹ã•ã„ã€‚
 ;;
 ;;         meadow -batch -q -no-site-file -l install.el -f make-sdic
 ;;
-;;     ¤¹¤ë¤È¡¢¼Â¹Ô¤µ¤ì¤¿ meadow ¤Î´Ä¶­¤«¤éÅ¬ÀÚ¤Ê¥¤¥ó¥¹¥È¡¼¥ëÀè¤ò¿äÄê
-;;     ¤·¤Æ¡¢¥¤¥ó¥¹¥È¡¼¥ë¤ò¼Â¹Ô¤·¤Ş¤¹¡£¥¤¥ó¥¹¥È¡¼¥ëÀè¤òÊÑ¹¹¤·¤¿¤¤¾ì¹ç
-;;     ¤Ï¡¢¥ª¥×¥·¥ç¥ó¤Ç»ØÄê¤·¤Æ¤¯¤À¤µ¤¤¡£
+;;     ã™ã‚‹ã¨ã€å®Ÿè¡Œã•ã‚ŒãŸ meadow ã®ç’°å¢ƒã‹ã‚‰é©åˆ‡ãªã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å…ˆã‚’æ¨å®š
+;;     ã—ã¦ã€ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å…ˆã‚’å¤‰æ›´ã—ãŸã„å ´åˆ
+;;     ã¯ã€ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§æŒ‡å®šã—ã¦ãã ã•ã„ã€‚
 ;;
-;;         --infodir=DIR              Info ¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê¤ò»ØÄê
-;;         --with-lispdir=DIR         Lisp ¥×¥í¥°¥é¥à¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê¤ò»ØÄê
-;;         --with-dictdir=DIR         ¼­½ñ¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê¤ò»ØÄê
-;;         --with-multidict=(yes|no)  Ê£¿ô¼­½ñ¤Î¸¡½Ğ¤ò¹Ô¤¦¾ì¹ç¤Ï yes (¥Ç¥Õ¥©¥ë¥È¤Ï no)
+;;         --infodir=DIR              Info ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æŒ‡å®š
+;;         --with-lispdir=DIR         Lisp ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æŒ‡å®š
+;;         --with-dictdir=DIR         è¾æ›¸ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’æŒ‡å®š
+;;         --with-multidict=(yes|no)  è¤‡æ•°è¾æ›¸ã®æ¤œå‡ºã‚’è¡Œã†å ´åˆã¯ yes (ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯ no)
 ;;
-;; (4) °Ê²¼¤ÎÀßÄê¤ò .emacs ¤ËÉÕ¤±²Ã¤¨¤Æ²¼¤µ¤¤¡£
+;; (4) ä»¥ä¸‹ã®è¨­å®šã‚’ .emacs ã«ä»˜ã‘åŠ ãˆã¦ä¸‹ã•ã„ã€‚
 ;;
 ;;         (setq load-path (cons (expand-file-name "../../site-lisp/sdic" data-directory) load-path))
-;;         (autoload 'sdic "sdic" "±ÑÃ±¸ì¤Î°ÕÌ£¤òÄ´¤Ù¤ë" t nil)
+;;         (autoload 'sdic "sdic" "è‹±å˜èªã®æ„å‘³ã‚’èª¿ã¹ã‚‹" t nil)
 ;;         (global-set-key "\C-cw" 'sdic)
 ;;
-;;     ¥­¡¼¥Ğ¥¤¥ó¥É¤ÏÅ¬Åö¤ËÊÑ¹¹¤·¤Æ²¼¤µ¤¤¡£Meadow-1.03 °Ê¹ß¤Ê¤É¤Ç¤Ï¡¢
-;;     load-path ¤Ë¤Ä¤¤¤Æ¤ÎÀßÄê¤ÏÍ×¤é¤Ê¤¤¤«¤âÃÎ¤ì¤Ş¤»¤ó¡£
+;;     ã‚­ãƒ¼ãƒã‚¤ãƒ³ãƒ‰ã¯é©å½“ã«å¤‰æ›´ã—ã¦ä¸‹ã•ã„ã€‚Meadow-1.03 ä»¥é™ãªã©ã§ã¯ã€
+;;     load-path ã«ã¤ã„ã¦ã®è¨­å®šã¯è¦ã‚‰ãªã„ã‹ã‚‚çŸ¥ã‚Œã¾ã›ã‚“ã€‚
 
 
 ;;; Code:
 
-;; Emacs-20 °Ê¾å¤Î¾ì¹ç¤ËÉ¬Í×¤ÊÆüËÜ¸ì´Ä¶­¤ÎÀßÄê
+;; Emacs-20 ä»¥ä¸Šã®å ´åˆã«å¿…è¦ãªæ—¥æœ¬èªç’°å¢ƒã®è¨­å®š
 (and (boundp 'emacs-major-version)
      (>= emacs-major-version 20)
      (fboundp 'set-language-environment)
      (set-language-environment "Japanese"))
 
 
-;; ¥¤¥ó¥¹¥È¡¼¥ëÀè¤ò¿äÄê
+;; ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å…ˆã‚’æ¨å®š
 
 (defvar make-sdic-lisp-directory
-  ;; Mule-for-Windows ¤È Meadow ¤Ç¤Ï¥Ç¥£¥ì¥¯¥È¥ê¹½À®¤¬°Û¤Ê¤ë
+  ;; Mule-for-Windows ã¨ Meadow ã§ã¯ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹æˆãŒç•°ãªã‚‹
   (if (fboundp 'mule-for-win32-version)
       (expand-file-name "../site-lisp/sdic" data-directory)
     (expand-file-name "../../site-lisp/sdic" data-directory))
-  "Lisp program ¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê")
+  "Lisp program ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-info-directory (and (require 'info) (car Info-directory-list))
-  "Info ¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê")
+  "Info ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-dict-directory make-sdic-lisp-directory
-  "¼­½ñ¤ò¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê")
+  "è¾æ›¸ã‚’ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-gene-coding-system (if (>= emacs-major-version 20) 'sjis-dos *autoconv*)
-  "ÇÛÉÛ¤µ¤ì¤Æ¤¤¤ëGENE¼­½ñ¤Î´Á»ú¥³¡¼¥É")
+  "é…å¸ƒã•ã‚Œã¦ã„ã‚‹GENEè¾æ›¸ã®æ¼¢å­—ã‚³ãƒ¼ãƒ‰")
 
 (defvar make-sdic-edict-coding-system (if (>= emacs-major-version 20) 'euc-japan-unix *autoconv*)
-  "ÇÛÉÛ¤µ¤ì¤Æ¤¤¤ëEDICT¼­½ñ¤Î´Á»ú¥³¡¼¥É")
+  "é…å¸ƒã•ã‚Œã¦ã„ã‚‹EDICTè¾æ›¸ã®æ¼¢å­—ã‚³ãƒ¼ãƒ‰")
 
 
-;; ¥Ñ¥Ã¥±¡¼¥¸¤Î¥Ç¥£¥ì¥¯¥È¥ê¹½Â¤¤òÊÑ¿ô¤ËÀßÄê
+;; ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹é€ ã‚’å¤‰æ•°ã«è¨­å®š
 
 (defvar make-sdic-version "@VERSION@")
 
 (defvar make-sdic-root-directory (expand-file-name default-directory)
-  "¥Ñ¥Ã¥±¡¼¥¸¤Î¥È¥Ã¥×¥Ç¥£¥ì¥¯¥È¥ê")
+  "ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ã®ãƒˆãƒƒãƒ—ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-src-directory (expand-file-name "lisp" make-sdic-root-directory)
-  "Lisp program ¤¬³ÊÇ¼¤µ¤ì¤Æ¤¤¤ë¥Ç¥£¥ì¥¯¥È¥ê")
+  "Lisp program ãŒæ ¼ç´ã•ã‚Œã¦ã„ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-texi-directory (expand-file-name "texi" make-sdic-root-directory)
-  "Info ¤Î¥½¡¼¥¹¤¬³ÊÇ¼¤µ¤ì¤Æ¤¤¤ë¥Ç¥£¥ì¥¯¥È¥ê")
+  "Info ã®ã‚½ãƒ¼ã‚¹ãŒæ ¼ç´ã•ã‚Œã¦ã„ã‚‹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª")
 
 (defvar make-sdic-eiwa-candidates
   '("gene.sdic" "ejdict.sdic" "eedict.sdic" "eijirou.sdic"
     "gene.dic" "ejdict.dic" "eedict.dic" "eijirou.dic"
     "e4jwords.sdic" "ecompdic.sdic" "eenamdict.sdic"
     "e4jwords.dic" "ecompdic.dic" "eenamdict.dic")
-  "¥¤¥ó¥¹¥È¡¼¥ëºÑ¤Î±ÑÏÂ¼­½ñ¤ò¸¡º÷¤¹¤ë¾ì¹ç¤ËÂĞ¾İ¤È¤Ê¤ë¥Õ¥¡¥¤¥ëÌ¾¤Î¥ê¥¹¥È")
+  "ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã®è‹±å’Œè¾æ›¸ã‚’æ¤œç´¢ã™ã‚‹å ´åˆã«å¯¾è±¡ã¨ãªã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒªã‚¹ãƒˆ")
 
 (defvar make-sdic-waei-candidates
   '("edict.sdic" "jedict.sdic" "jgene.sdic" "waeijirou.sdic"
     "jedict.dic" "jgene.dic" "waeijirou.dic"
     "j4jwords.sdic" "jcompdic.sdic" "jenamdict.sdic"
     "j4jwords.dic" "jcompdic.dic" "jenamdict.dic")
-  "¥¤¥ó¥¹¥È¡¼¥ëºÑ¤ÎÏÂ±Ñ¼­½ñ¤ò¸¡º÷¤¹¤ë¾ì¹ç¤ËÂĞ¾İ¤È¤Ê¤ë¥Õ¥¡¥¤¥ëÌ¾¤Î¥ê¥¹¥È")
+  "ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã®å’Œè‹±è¾æ›¸ã‚’æ¤œç´¢ã™ã‚‹å ´åˆã«å¯¾è±¡ã¨ãªã‚‹ãƒ•ã‚¡ã‚¤ãƒ«åã®ãƒªã‚¹ãƒˆ")
 
 (defvar make-sdic-detect-multi-dictionary nil
-  "Ê£¿ô¼­½ñ¤ò¸¡½Ğ¤¹¤ë¾ì¹ç¤Ï t ¤Ë¤¹¤ë")
+  "è¤‡æ•°è¾æ›¸ã‚’æ¤œå‡ºã™ã‚‹å ´åˆã¯ t ã«ã™ã‚‹")
 
 (defvar make-sdic-debug nil)
 
 
-;; load-path ¤òÀßÄê
+;; load-path ã‚’è¨­å®š
 (mapcar (lambda (dir)
 	  (or (member dir load-path)
 	      (setq load-path (cons dir load-path))))
@@ -136,7 +136,7 @@
 (require 'texinfmt)
 
 
-;;; ¤³¤³¤«¤éËÜÂÎ
+;;; ã“ã“ã‹ã‚‰æœ¬ä½“
 
 (defun make-sdic ()
   (defvar command-line-args-left)	;Avoid 'free variable' warning
@@ -158,7 +158,7 @@
       (setq make-sdic-detect-multi-dictionary (string= "yes" (substring (car command-line-args-left) -3))))
      (t (make-sdic-help "Illegal option")))
     (setq command-line-args-left (cdr command-line-args-left)))
-  ;; ¥¤¥ó¥¹¥È¡¼¥ëÀè¤Î¥Ç¥£¥ì¥¯¥È¥ê¤òºî¤ë
+  ;; ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«å…ˆã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œã‚‹
   (or make-sdic-debug
       (mapcar (lambda (dir)
 		(or (file-directory-p dir)
@@ -168,7 +168,7 @@
 	      (list make-sdic-lisp-directory
 		    make-sdic-info-directory
 		    make-sdic-dict-directory)))
-  ;; ¥¤¥ó¥¹¥È¡¼¥ëºÑ¤Î¼­½ñ¤¬¤¢¤ë¤«Ä´¤Ù¤ë
+  ;; ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã®è¾æ›¸ãŒã‚ã‚‹ã‹èª¿ã¹ã‚‹
   (let ((eiwa (or (delq nil (mapcar (lambda (basename)
 				      (and (file-exists-p (expand-file-name basename make-sdic-dict-directory))
 					   basename))
@@ -179,7 +179,7 @@
 					   basename))
 				    make-sdic-waei-candidates))
 		  (file-exists-p "edict"))))
-    ;; ¥¤¥ó¥¹¥È¡¼¥ëºÑ¤Î¼­½ñ¤«¤é½ÅÊ£¤·¤Æ¤¤¤ë¤â¤Î¤ò¼è¤ê½ü¤¯
+    ;; ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«æ¸ˆã®è¾æ›¸ã‹ã‚‰é‡è¤‡ã—ã¦ã„ã‚‹ã‚‚ã®ã‚’å–ã‚Šé™¤ã
     (or (eq eiwa t)
 	(eq eiwa nil)
 	(setq eiwa (delq t (mapcar (lambda (basename)
@@ -194,7 +194,7 @@
 					 (if (member (concat (substring basename 0 -3) "sdic") waei) t basename)
 				       basename))
 				   waei))))
-    ;; --with-multidict=no ¤Î¾ì¹ç¤Ï¡¢ºÇ½é¤Ë¸«¤Ä¤«¤Ã¤¿¼­½ñ¤Î¤ß¤òÍøÍÑ¤¹¤ë
+    ;; --with-multidict=no ã®å ´åˆã¯ã€æœ€åˆã«è¦‹ã¤ã‹ã£ãŸè¾æ›¸ã®ã¿ã‚’åˆ©ç”¨ã™ã‚‹
     (or make-sdic-detect-multi-dictionary
 	(progn
 	  (or (eq eiwa t)
@@ -213,7 +213,7 @@
 
 
 (defun make-sdic-help (&optional msg)
-  "¥Ø¥ë¥×¥á¥Ã¥»¡¼¥¸¤ò½ĞÎÏ¤·¤Æ¤½¤Î¤Ş¤Ş½ªÎ»¤¹¤ë´Ø¿ô"
+  "ãƒ˜ãƒ«ãƒ—ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºåŠ›ã—ã¦ãã®ã¾ã¾çµ‚äº†ã™ã‚‹é–¢æ•°"
   (error "%s\
 Usage: emacs -batch -q -no-site-file -l install.el -f make-sdic [options]
 Options:
@@ -231,7 +231,7 @@ Direcotry:
 
 
 (defun make-sdic-sample_emacs ()
-  "sample.emacs.in ¤«¤é sample.emacs ¤òÀ¸À®¤¹¤ë´Ø¿ô"
+  "sample.emacs.in ã‹ã‚‰ sample.emacs ã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°"
   (let ((in-file (expand-file-name "sample.emacs.in" make-sdic-src-directory))
 	(out-file (expand-file-name "sample.emacs" make-sdic-src-directory)))
     (if make-sdic-debug
@@ -252,7 +252,7 @@ Direcotry:
 
 
 (defun make-sdic-sdic_el (eiwa waei)
-  "sdic.el.in ¤«¤é sdic.el ¤òÀ¸À®¤¹¤ë´Ø¿ô"
+  "sdic.el.in ã‹ã‚‰ sdic.el ã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°"
   (let ((in-file (expand-file-name "sdic.el.in" make-sdic-src-directory))
 	(out-file (expand-file-name "sdic.el" make-sdic-src-directory)))
     (if make-sdic-debug
@@ -295,7 +295,7 @@ Direcotry:
 
 
 (defun make-sdic-install-lisp ()
-  "Á´¤Æ¤Î¥Õ¥¡¥¤¥ë¤ò¥Ğ¥¤¥È¥³¥ó¥Ñ¥¤¥ë¤·¤Æ¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë´Ø¿ô"
+  "å…¨ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒã‚¤ãƒˆã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã—ã¦ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹é–¢æ•°"
   (mapcar (lambda (basename)
 	    (let ((in-file (expand-file-name basename make-sdic-src-directory))
 		  (out-file (expand-file-name basename make-sdic-lisp-directory)))
@@ -309,7 +309,7 @@ Direcotry:
 
 
 (defun make-sdic-install-info ()
-  "Info ¤ò½èÍı¤·¤Æ¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë´Ø¿ô"
+  "Info ã‚’å‡¦ç†ã—ã¦ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹é–¢æ•°"
   (let ((in-file (expand-file-name "sdic.texi" make-sdic-texi-directory))
 	(out-file (expand-file-name "sdic.info" make-sdic-texi-directory))
 	(copy-file (expand-file-name "sdic.info" make-sdic-info-directory)))
@@ -329,7 +329,7 @@ Direcotry:
 
 
 (defun make-sdic-install-gene ()
-  "GENE¼­½ñ¤òSDIC·Á¼°¤ËÊÑ´¹¤·¤Æ¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë´Ø¿ô"
+  "GENEè¾æ›¸ã‚’SDICå½¢å¼ã«å¤‰æ›ã—ã¦ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹é–¢æ•°"
   (let* ((in-file (expand-file-name "gene.txt" make-sdic-root-directory))
 	 (out-file (expand-file-name "gene.sdic" make-sdic-root-directory))
 	 (copy-file (expand-file-name "gene.sdic" make-sdic-dict-directory)))
@@ -342,7 +342,7 @@ Direcotry:
 
 
 (defun make-sdic-install-jedict ()
-  "EDICT¼­½ñ¤òSDIC·Á¼°¤ËÊÑ´¹¤·¤Æ¥¤¥ó¥¹¥È¡¼¥ë¤¹¤ë´Ø¿ô"
+  "EDICTè¾æ›¸ã‚’SDICå½¢å¼ã«å¤‰æ›ã—ã¦ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã™ã‚‹é–¢æ•°"
   (let* ((in-file (expand-file-name "edict" make-sdic-root-directory))
 	 (out-file (expand-file-name "jedict.sdic" make-sdic-root-directory))
 	 (copy-file (expand-file-name "jedict.sdic" make-sdic-dict-directory)))
@@ -362,7 +362,7 @@ Direcotry:
 
 
 (defun make-sdic-gene (input-file &optional output-file)
-  "GENE¼­½ñ¤òSDIC·Á¼°¤ËÊÑ´¹¤¹¤ë"
+  "GENEè¾æ›¸ã‚’SDICå½¢å¼ã«å¤‰æ›ã™ã‚‹"
   (interactive "fInput dictionary file name: ")
   (or output-file
       (setq output-file (concat (if (string-match "\\.[^\\.]+$" input-file)
@@ -376,7 +376,7 @@ Direcotry:
 	  (message "Reading %s..." input-file)
 	  (sdicf-insert-file-contents input-file make-sdic-gene-coding-system)
 	  (message "Converting %s..." input-file)
-	  ;; ºÇ½é¤Î2¹Ô¤Ï¥³¥á¥ó¥È¤À¤«¤é¡¢¹ÔÆ¬¤Ë # ¤òÁŞÆş¤¹¤ë
+	  ;; æœ€åˆã®2è¡Œã¯ã‚³ãƒ¡ãƒ³ãƒˆã ã‹ã‚‰ã€è¡Œé ­ã« # ã‚’æŒ¿å…¥ã™ã‚‹
 	  (goto-char (point-min))
 	  (insert "# ")
 	  (forward-line)
@@ -416,7 +416,7 @@ Direcotry:
 
 
 (defun make-sdic-jedict (input-file &optional output-file)
-  "EDICT¼­½ñ¤òSDIC·Á¼°¤ËÊÑ´¹¤¹¤ë"
+  "EDICTè¾æ›¸ã‚’SDICå½¢å¼ã«å¤‰æ›ã™ã‚‹"
   (interactive "fInput dictionary file name: ")
   (or output-file
       (setq output-file (concat (if (string-match "\\.[^\\.]+$" input-file)
@@ -430,7 +430,7 @@ Direcotry:
 	  (message "Reading %s..." input-file)
 	  (sdicf-insert-file-contents input-file make-sdic-edict-coding-system)
 	  (message "Converting %s..." input-file)
-	  ;; ºÇ½é¤Î1¹Ô¤Ï¥³¥á¥ó¥È¤À¤«¤é¡¢¹ÔÆ¬¤Ë # ¤òÁŞÆş¤¹¤ë
+	  ;; æœ€åˆã®1è¡Œã¯ã‚³ãƒ¡ãƒ³ãƒˆã ã‹ã‚‰ã€è¡Œé ­ã« # ã‚’æŒ¿å…¥ã™ã‚‹
 	  (delete-region (goto-char (point-min)) (progn (forward-char 4) (point)))
 	  (insert "# ")
 	  (forward-line)
@@ -461,9 +461,9 @@ Direcotry:
 
 
 (defun make-sdic-replace-string (string from to) "\
-Ê¸»úÎó STRING ¤Ë´Ş¤Ş¤ì¤Æ¤¤¤ëÊ¸»úÎó FROM ¤òÁ´¤ÆÊ¸»úÎó TO ¤ËÃÖ´¹¤·¤¿Ê¸»úÎó¤òÊÖ¤¹
-FROM ¤Ë¤ÏÀµµ¬É½¸½¤ò´Ş¤àÊ¸»úÎó¤ò»ØÄê¤Ç¤­¤ë¤¬¡¢TO ¤Ï¸ÇÄêÊ¸»úÎó¤·¤«»ØÄê¤Ç
-¤­¤Ê¤¤¤Î¤Ç¡¢Ãí°Õ¤·¤Æ»È¤¦¤³¤È¡£"
+æ–‡å­—åˆ— STRING ã«å«ã¾ã‚Œã¦ã„ã‚‹æ–‡å­—åˆ— FROM ã‚’å…¨ã¦æ–‡å­—åˆ— TO ã«ç½®æ›ã—ãŸæ–‡å­—åˆ—ã‚’è¿”ã™
+FROM ã«ã¯æ­£è¦è¡¨ç¾ã‚’å«ã‚€æ–‡å­—åˆ—ã‚’æŒ‡å®šã§ãã‚‹ãŒã€TO ã¯å›ºå®šæ–‡å­—åˆ—ã—ã‹æŒ‡å®šã§
+ããªã„ã®ã§ã€æ³¨æ„ã—ã¦ä½¿ã†ã“ã¨ã€‚"
   (let ((start 0) list)
     (while (string-match from string start)
       (setq list (cons to (cons (substring string start (match-beginning 0)) list))
@@ -472,7 +472,7 @@ FROM ¤Ë¤ÏÀµµ¬É½¸½¤ò´Ş¤àÊ¸»úÎó¤ò»ØÄê¤Ç¤­¤ë¤¬¡¢TO ¤Ï¸ÇÄêÊ¸»úÎó¤·¤«»ØÄê¤Ç
 
 
 (defun make-sdic-escape-string (str &optional escape-lf)
-  "STR ¤Ë´Ş¤Ş¤ì¤Æ¤¤¤ëÆÃ¼ìÊ¸»ú¤ò¥¨¥¹¥±¡¼¥×¤¹¤ë"
+  "STR ã«å«ã¾ã‚Œã¦ã„ã‚‹ç‰¹æ®Šæ–‡å­—ã‚’ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã™ã‚‹"
   (save-match-data
     (setq str (make-sdic-replace-string str "&" "&amp;"))
     (if escape-lf
@@ -482,7 +482,7 @@ FROM ¤Ë¤ÏÀµµ¬É½¸½¤ò´Ş¤àÊ¸»úÎó¤ò»ØÄê¤Ç¤­¤ë¤¬¡¢TO ¤Ï¸ÇÄêÊ¸»úÎó¤·¤«»ØÄê¤Ç
 
 
 (defun make-sdic-escape-region (start end &optional escape-lf)
-  "¥ê¡¼¥¸¥ç¥ó¤Ë´Ş¤Ş¤ì¤Æ¤¤¤ëÆÃ¼ìÊ¸»ú¤ò¥¨¥¹¥±¡¼¥×¤¹¤ë"
+  "ãƒªãƒ¼ã‚¸ãƒ§ãƒ³ã«å«ã¾ã‚Œã¦ã„ã‚‹ç‰¹æ®Šæ–‡å­—ã‚’ã‚¨ã‚¹ã‚±ãƒ¼ãƒ—ã™ã‚‹"
   (save-excursion
     (save-match-data
       (save-restriction

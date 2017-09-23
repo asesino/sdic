@@ -3,25 +3,25 @@
 # Author: TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 # Keywords: dictionary
 
-# EDICT�����μ����SDIC�������Ѵ����� Perl ������ץ�
+# EDICT形式の辞書をSDIC形式に変換する Perl スクリプト
 
-# EDICT�����ϡ��������ȥ�ꥢ��Monash��ؤ� Jim Breen ���������������
-# �����±Ѽ���Υե����ޥåȤǤ������Υե����ޥåȤμ���ϡ��ʲ���URL
-# ��������Ǥ��ޤ���
+# EDICT形式は、オーストラリア・Monash大学の Jim Breen 教授が収集されて
+# いる和英辞書のフォーマットです。このフォーマットの辞書は、以下のURL
+# から入手できます。
 #
 #     ftp://ftp.u-aizu.ac.jp/pub/SciEng/nihongo/ftp.cc.monash.edu.au/
 #
-# SDIC�������Ѵ�������ϡ����Τ褦�����Ѥ��Ʋ�������
+# SDIC形式に変換する場合は、次のように利用して下さい。
 #
 #     perl edict.perl edict >edict.sdic
 #
-# SDIC�����ξܺ٤ˤĤ��Ƥ� sdic.texi �򻲾Ȥ��Ʋ����������¼�����Ѵ�
-# ���뤿��ˤϡ�
+# SDIC形式の詳細については sdic.texi を参照して下さい。英和辞書に変換
+# するためには、
 #
 #     perl edict.perl --reverse edict >edict.sdic
 #
-# �� --reverse ���ץ������ɲä��Ƽ¹Ԥ��Ʋ������������������ޤ��ɤ�
-# ���¼���������ޤ��󡣤������ɤ��Ʋ����������罸��Ǥ���
+# と --reverse オプションを追加して実行して下さい。ただし、あまり良い
+# 英和辞書は得られません。これを改良して下さる方を募集中です。
 
 
 eval { binmode(STDOUT); };
@@ -32,21 +32,21 @@ if( $ARGV[0] eq '--reverse' ){
 } else {
     &normal();
 }
-    
-# �̾��SDIC�����μ������ؿ�
+
+# 通常のSDIC形式の辞書を作る関数
 sub normal {
-    $_ = <>;				# �ǽ��1�Ԥ����ɽ���Ǥ���
+    $_ = <>;				# 最初の1行は著作権表示である
     s!^[^/]+/!!;
     s!/$!!;
-    s!\s*$!\n!;				# ���ԥ����ɤ��Ѵ� [sdic:00428]
+    s!\s*$!\n!;				# 改行コードを変換 [sdic:00428]
     print "# ",$_;
     while( <> ){
-	s/\s+$//;			# �����ζ���ʸ������
-	s!/\(P\)/$!!;			# �����Υޡ����������� [sdic:00430]
-	s/&/&amp;/g;			# �᥿����饯�����ִ�����
+	s/\s+$//;			# 行末の空白文字を削除
+	s!/\(P\)/$!!;			# 外来語のマークを削除する [sdic:00430]
+	s/&/&amp;/g;			# メタキャラクタを置換する
 	s/</&lt;/g;
 	s/>/&gt;/g;
-	s/^([\200-\377]+) +//;		# ���Ф�����ڤ�Ф�
+	s/^([\200-\377]+) +//;		# 見出し語を切り出す
 	$head = $1;
 	$key  = $head;
 	while( s/^\[([\200-\377]+)\] +// ){
@@ -73,23 +73,23 @@ sub normal {
     print sort @LINE;
 }
 
-# �ո�����SDIC�����μ������ؿ�
+# 逆向きのSDIC形式の辞書を作る関数
 sub reverse {
-    $_ = <>;				# �ǽ��1�Ԥ����ɽ���Ǥ���
+    $_ = <>;				# 最初の1行は著作権表示である
     s!^[^/]+/!!;
     s!/$!!;
-    s!\s*$!\n!;				# ���ԥ����ɤ��Ѵ� [sdic:00428]
+    s!\s*$!\n!;				# 改行コードを変換 [sdic:00428]
     print "# ",$_;
     while( <> ){
-	s/\s+$//;			# �����ζ���ʸ������
-	s!/\(P\)/$!!;			# �����Υޡ����������� [sdic:00430]
-	s!^([^/]+/)\([^\)]+\)( +\([^\)]+\))* +!$1!; # �ʻ��ɽ����ʬ��������
-	s/&/&amp;/g;			# �᥿����饯�����ִ�����
+	s/\s+$//;			# 行末の空白文字を削除
+	s!/\(P\)/$!!;			# 外来語のマークを削除する [sdic:00430]
+	s!^([^/]+/)\([^\)]+\)( +\([^\)]+\))* +!$1!; # 品詞を表す部分を削除する
+	s/&/&amp;/g;			# メタキャラクタを置換する
 	s/</&lt;/g;
 	s/>/&gt;/g;
-	s/^([\200-\377]+) +//;		# ���Ф�����ڤ�Ф�
-	$content = $1;			# ���Ф��줬����ʸ�ˤʤ�
-	while( s/^\[([\200-\377]+)\] +// ){ ; }	# ���겾̾��ΤƤ�
+	s/^([\200-\377]+) +//;		# 見出し語を切り出す
+	$content = $1;			# 見出し語が説明文になる
+	while( s/^\[([\200-\377]+)\] +// ){ ; }	# 振り仮名を捨てる
 	s!^/!!;
 	s!/$!!;
 	for $head ( split( "/",$_ ) ){
@@ -101,18 +101,18 @@ sub reverse {
 	    $content{$_}++;
 	}
 	for( keys %content ){
-	    if( /^([\200-\377]{2})\1/ && $content{sprintf("%s��%s",$1,substr($_,4))} ){
+	    if( /^([\200-\377]{2})\1/ && $content{sprintf("%s々%s",$1,substr($_,4))} ){
 		$content{$_}=0;
 	    }
 	}
 	$str = $head;
 	$str =~ tr/A-Z/a-z/;
 	$str =~ s/\s+/ /;
-	$key = $str;			# $key = ����ȱ���ʸ��/��ʸ������������Ԥʤä�ʸ����
+	$key = $str;			# $key = 空白と英大文字/小文字の正規化を行なった文字列
 	$str =~ s/^(\([^\)]+\) *)+//;
 	$str =~ s/( *\([^\)]+\))+$//;
 	$str =~ s/^~ //;
-	$str =~ s/ ~$//;		# $str = (...) �� ~ ���������ʸ����
+	$str =~ s/ ~$//;		# $str = (...) や ~ を取り除いた文字列
 	$str =~ s/"//g;
 	$str = $key unless $str;
 	if( $str eq $head ){

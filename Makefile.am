@@ -23,18 +23,18 @@ texi/sdic.info: texi/sdic.texi
 	$(EMACS) -batch -q -l install.el -f batch-texinfo-format $?
 
 config: lisp/sample.emacs
-	@echo -n "ËÜÅö¤Ë $$HOME/.emacs ¤ò½ñ¤­´¹¤¨¤Ş¤¹¤«[yes/no] " ;\
+	@echo -n "æœ¬å½“ã« $$HOME/.emacs ã‚’æ›¸ãæ›ãˆã¾ã™ã‹[yes/no] " ;\
 	read YN ;\
 	test "$$YN" = yes
 	@if [ -f "$$HOME/.emacs" ] ;\
 	then \
-	     echo "¸µ¤Î $$HOME/.emacs ¤ò $$HOME/.emacs.orig ¤È¤·¤ÆÊİÂ¸¤·¤Ş¤¹";\
+	     echo "å…ƒã® $$HOME/.emacs ã‚’ $$HOME/.emacs.orig ã¨ã—ã¦ä¿å­˜ã—ã¾ã™";\
 	     cp -p $$HOME/.emacs $$HOME/.emacs.orig ;\
 	fi
 	( echo ; cat lisp/sample.emacs )>>$$HOME/.emacs
 
 
-## ¼­½ñ¤òÀ¸À®¤¹¤ë¤¿¤á¤Î¥ë¡¼¥ë
+## è¾æ›¸ã‚’ç”Ÿæˆã™ã‚‹ãŸã‚ã®ãƒ«ãƒ¼ãƒ«
 gene.dic: contrib/gene.perl gene.txt
 	@NKF@ -S -e gene.txt | @PERL@ contrib/gene.perl --compat > $@
 
@@ -161,4 +161,3 @@ enamdict:
 		@BZIP2@ -dc $@.bz2 >$@ ;\
 	fi
 	test -s $@
-

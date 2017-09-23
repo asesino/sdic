@@ -1,6 +1,6 @@
-;;; sdic-mode ÍÑ¤ÎÀßÄê
+;;; sdic-mode ç”¨ã®è¨­å®š
 (setq load-path (cons "@lispdir@" load-path))
-(autoload 'sdic-describe-word "sdic" "±ÑÃ±¸ì¤Î°ÕÌ£¤òÄ´¤Ù¤ë" t nil)
+(autoload 'sdic-describe-word "sdic" "è‹±å˜èªã®æ„å‘³ã‚’èª¿ã¹ã‚‹" t nil)
 (global-set-key "\C-cw" 'sdic-describe-word)
-(autoload 'sdic-describe-word-at-point "sdic" "¥«¡¼¥½¥ë¤Î°ÌÃÖ¤Î±ÑÃ±¸ì¤Î°ÕÌ£¤òÄ´¤Ù¤ë" t nil)
+(autoload 'sdic-describe-word-at-point "sdic" "ã‚«ãƒ¼ã‚½ãƒ«ã®ä½ç½®ã®è‹±å˜èªã®æ„å‘³ã‚’èª¿ã¹ã‚‹" t nil)
 (global-set-key "\C-cW" 'sdic-describe-word-at-point)

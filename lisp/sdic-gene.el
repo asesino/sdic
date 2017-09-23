@@ -27,70 +27,70 @@
 
 ;; This file is a part of sdic. Please see sdic.el for more detail.
 
-;; COMPAT �����μ�������ץ���������餺�˸�������饤�֥��Ǥ���
-;; COMPAT �����ξܺ٤ˤĤ��Ƥ� sdic.texi �򻲾Ȥ��Ʋ�������
+;; COMPAT 形式の辞書を外部プログラムに頼らずに検索するライブラリです。
+;; COMPAT 形式の詳細については sdic.texi を参照して下さい。
 
 
 ;;; Install:
 
-;; (1) �����Ŭ�ڤʷ������Ѵ����ơ�Ŭ���ʾ��( ��: /usr/dict/ )����¸
-;;     ���Ʋ������������Ѵ��ѥ�����ץȤȤ��ưʲ��� Perl ������ץȤ�
-;;     ���ѤǤ��ޤ���
+;; (1) 辞書を適切な形式に変換して、適当な場所( 例: /usr/dict/ )に保存
+;;     して下さい。辞書変換用スクリプトとして以下の Perl スクリプトが
+;;     利用できます。
 ;;
-;;         gene.perl    - GENE95 ����
-;;         jgene.perl   - GENE95 ���񤫤��±Ѽ������������
-;;         eijirou.perl - �Ѽ�Ϻ
+;;         gene.perl    - GENE95 辞書
+;;         jgene.perl   - GENE95 辞書から和英辞書を生成する
+;;         eijirou.perl - 英辞郎
 ;;
-;; (2) �Ȥ���褦�ˤ���������������� sdic-eiwa-dictionary-list �ޤ�
-;;     �� sdic-waei-dictionary-list ���ɲä��Ʋ�������
+;; (2) 使えるようにした辞書の定義情報を sdic-eiwa-dictionary-list また
+;;     は sdic-waei-dictionary-list に追加して下さい。
 ;;
 ;;         (setq sdic-eiwa-dictionary-list
 ;;               (cons '(sdic-gene "/usr/dict/gene.dic") sdic-eiwa-dictionary-list))
 ;;
-;;     �����������ϼ��Τ褦�ʹ����ˤʤäƤ��ޤ���
+;;     辞書定義情報は次のような構成になっています。
 ;;
-;;         (sdic-gene �ե�����̾ (���ץ����A ��A) (���ץ����B ��B) ...)
+;;         (sdic-gene ファイル名 (オプションA 値A) (オプションB 値B) ...)
 ;;
-;;     ���̤ʻ��꤬���פʾ��ˤϡ����ץ����Ͼ�ά�Ǥ��ޤ���
+;;     特別な指定が不要な場合には、オプションは省略できます。
 ;;
-;;         (sdic-gene �ե�����̾)
+;;         (sdic-gene ファイル名)
 
 
 ;;; Options:
 
-;; sdic-gene.el ���Ф��ƻ���Ǥ��륪�ץ����ϼ����̤�Ǥ���
+;; sdic-gene.el に対して指定できるオプションは次の通りです。
 ;;
 ;; coding-system
-;;     ����δ��������ɤ���ꤷ�ޤ�����ά�������ϡ�
-;;     sdic-default-coding-system ���ͤ�Ȥ��ޤ���
+;;     辞書の漢字コードを指定します。省略した場合は、
+;;     sdic-default-coding-system の値を使います。
 ;;
 ;; title
-;;     ����Υ����ȥ����ꤷ�ޤ�����ά�������ϡ�����ե������ 
-;;     basename �򥿥��ȥ�Ȥ��ޤ���
+;;     辞書のタイトルを指定します。省略した場合は、辞書ファイルの
+;;     basename をタイトルとします。
 ;;
 ;; extract
-;;     ���̼����Ÿ�����뤿��γ������ޥ�ɤ���ꤷ�ޤ�����ά�������
-;;     �ϡ����񤬰��̤���Ƥ��ʤ��ȸ��ʤ��ޤ���
+;;     圧縮辞書を展開するための外部コマンドを指定します。省略した場合
+;;     は、辞書が圧縮されていないと見なします。
 ;;
 ;; extract-option
-;;     extract ���ץ����ˤ�äƻ��ꤵ�줿�������ޥ�ɤ��Ф��ơ�����
-;;     ��Ÿ������ɸ����Ϥ˽��Ϥ����뤿��Υ��ޥ�ɥ饤���������ꤷ
-;;     �ޤ�����ά�������� sdic-gene-extract-option ���ͤ�Ȥ��ޤ���
+;;     extract オプションによって指定された外部コマンドに対して、辞書
+;;     を展開して標準出力に出力させるためのコマンドライン引数を指定し
+;;     ます。省略した場合は sdic-gene-extract-option の値を使います。
 
 
 ;;; Note:
 
-;; sdic-compat.el �� sdic-gene.el ��Ʊ����ǽ���󶡤��Ƥ���饤�֥���
-;; ����sdic-compat.el �ϳ������ޥ�ɤ�ƤӽФ��Ƥ���Τ��Ф��ơ�
-;; sdic-gene.el �� Emacs �ε�ǽ�Τߤ����Ѥ��Ƥ��ޤ����������������Х�
-;; �ե����ɤ߹���Ǥ��鸡����Ԥʤ��Τǡ����̤Υ��꤬ɬ�פˤʤ�ޤ���
+;; sdic-compat.el と sdic-gene.el は同じ機能を提供しているライブラリで
+;; す。sdic-compat.el は外部コマンドを呼び出しているのに対して、
+;; sdic-gene.el は Emacs の機能のみを利用しています。ただし、辞書をバッ
+;; ファに読み込んでから検索を行なうので、大量のメモリが必要になります。
 ;;
-;; Default ������Ǥϡ�ɬ�פʳ������ޥ�ɤ����Ĥ��ä����� 
-;; sdic-compat.el �򡢸��Ĥ���ʤ��ä����ˤ� sdic-gene.el ��Ȥ��褦
-;; �ˤʤäƤ��ޤ���
+;; Default の設定では、必要な外部コマンドが見つかった場合は
+;; sdic-compat.el を、見つからなかった場合には sdic-gene.el を使うよう
+;; になっています。
 
 
-;;; �饤�֥���������
+;;; ライブラリ定義情報
 (require 'sdic)
 (require 'sdicf)
 (provide 'sdic-gene)
@@ -103,19 +103,19 @@
 
 
 ;;;----------------------------------------------------------------------
-;;;		���/�ѿ������
+;;;		定数/変数の宣言
 ;;;----------------------------------------------------------------------
 
 (defvar sdic-gene-extract-option "-dc" "\
 *Option for archiver.
-���̼����Ÿ�����뤿��˻Ȥ����ץ����")
+圧縮辞書を展開するために使うオプション")
 
 (defconst sdic-gene-search-buffer-name " *sdic-gene*")
 
 
 
 ;;;----------------------------------------------------------------------
-;;;		����
+;;;		本体
 ;;;----------------------------------------------------------------------
 
 (defun sdic-gene-init-dictionary (file-name &rest option-list)
@@ -163,7 +163,7 @@
 
 
 (defsubst sdic-gene-search-internal (string)
-  "�̾�θ�����Ԥ������ؿ�"
+  "通常の検索を行う内部関数"
   (let (ret (case-fold-search t))
     (while (search-forward string nil t)
       (save-excursion
@@ -175,7 +175,7 @@
 
 
 (defsubst sdic-gene-re-search-internal (string)
-  "����ɽ��������Ԥ������ؿ�"
+  "正規表現検索を行う内部関数"
   (let (ret (case-fold-search t))
     (while (re-search-forward string nil t)
       (save-excursion
@@ -188,35 +188,35 @@
 
 (defun sdic-gene-search-entry (dic string &optional search-type) "\
 Function to search word with look or grep, and write results to current buffer.
-search-type ���ͤˤ�äƼ��Τ褦��ư����ѹ����롣
-    nil    : �������׸���
-    t      : �������׸���
-    lambda : �������׸���
-    0      : ��ʸ����
-    regexp : ����ɽ������
-������̤Ȥ��Ƹ��Ĥ��ä����Ф���򥭡��Ȥ����������ʸ����Ƭ�� point ���ͤȤ���
-Ϣ��������֤���
+search-type の値によって次のように動作を変更する。
+    nil    : 前方一致検索
+    t      : 後方一致検索
+    lambda : 完全一致検索
+    0      : 全文検索
+    regexp : 正規表現検索
+検索結果として見つかった見出し語をキーとし、その定義文の先頭の point を値とする
+連想配列を返す。
 "
   (save-excursion
     (set-buffer (get dic 'sdic-gene-search-buffer))
     (goto-char (point-min))
     (cond
-     ;; �������׸���
+     ;; 前方一致検索
      ((eq search-type nil)
       (sdic-gene-search-internal (concat "\n" string)))
-     ;; �������׸���
+     ;; 後方一致検索
      ((eq search-type t)
       (sdic-gene-search-internal (concat string "\t")))
-     ;; �������׸���
+     ;; 完全一致検索
      ((eq search-type 'lambda)
       (sdic-gene-search-internal (concat "\n" string "\t")))
-     ;; ��ʸ����
+     ;; 全文検索
      ((eq search-type 0)
       (sdic-gene-search-internal string))
-     ;; ����ɽ������
+     ;; 正規表現検索
      ((eq search-type 'regexp)
       (sdic-gene-re-search-internal string))
-     ;; ����ʳ��θ�����������ꤵ�줿���
+     ;; それ以外の検索形式を指定された場合
      (t (error "Not supported search type is specified. \(%s\)"
 	       (prin1-to-string search-type))))))
 

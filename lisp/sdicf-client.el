@@ -25,82 +25,82 @@
 
 ;;; Commentary:
 
-;; SDIC �����μ���� sdicf.el �����Ѥ��Ƹ�������饤�֥��Ǥ���
+;; SDIC 形式の辞書を sdicf.el を利用して検索するライブラリです。
 
 
 ;;; Install:
 
-;; (1) �����Ŭ�ڤʷ������Ѵ����ơ�Ŭ���ʾ��( ��: /usr/dict/ )����¸
-;;     ���Ʋ������������Ѵ��ѥ�����ץȤȤ��ưʲ��� Perl ������ץȤ�
-;;     ���ѤǤ��ޤ���
+;; (1) 辞書を適切な形式に変換して、適当な場所( 例: /usr/dict/ )に保存
+;;     して下さい。辞書変換用スクリプトとして以下の Perl スクリプトが
+;;     利用できます。
 ;;
-;;         gene.perl    - GENE95 ����
-;;         edict.perl   - EDICT ����
-;;         eijirou.perl - �Ѽ�Ϻ
+;;         gene.perl    - GENE95 辞書
+;;         edict.perl   - EDICT 辞書
+;;         eijirou.perl - 英辞郎
 ;;
-;; (2) �Ȥ���褦�ˤ���������������� sdic-eiwa-dictionary-list �ޤ�
-;;     �� sdic-waei-dictionary-list ���ɲä��Ʋ�������
+;; (2) 使えるようにした辞書の定義情報を sdic-eiwa-dictionary-list また
+;;     は sdic-waei-dictionary-list に追加して下さい。
 ;;
 ;;         (setq sdic-eiwa-dictionary-list
 ;;               (cons '(sdicf-client "/usr/dict/gene.dic") sdic-eiwa-dictionary-list))
 ;;
-;;     �����������ϼ��Τ褦�ʹ����ˤʤäƤ��ޤ���
+;;     辞書定義情報は次のような構成になっています。
 ;;
-;;         (sdicf-client �ե�����̾ (���ץ����A ��A) (���ץ����B ��B) ...)
+;;         (sdicf-client ファイル名 (オプションA 値A) (オプションB 値B) ...)
 ;;
-;;     ���̤ʻ��꤬���פʾ��ˤϡ����ץ����Ͼ�ά�Ǥ��ޤ���
+;;     特別な指定が不要な場合には、オプションは省略できます。
 ;;
-;;         (sdicf-client �ե�����̾)
+;;         (sdicf-client ファイル名)
 
 
 ;;; Options:
 
-;; sdicf-client.el ���Ф��ƻ���Ǥ��륪�ץ����ϼ����̤�Ǥ���
+;; sdicf-client.el に対して指定できるオプションは次の通りです。
 ;;
 ;; coding-system
-;;     ����δ��������ɤ���ꤷ�ޤ�����ά�������ϡ�
-;;     sdic-default-coding-system ���ͤ�Ȥ��ޤ���
+;;     辞書の漢字コードを指定します。省略した場合は、
+;;     sdic-default-coding-system の値を使います。
 ;;
 ;; title
-;;     ����Υ����ȥ����ꤷ�ޤ�����ά�������ϡ�����ե������ 
-;;     basename �򥿥��ȥ�Ȥ��ޤ���
+;;     辞書のタイトルを指定します。省略した場合は、辞書ファイルの
+;;     basename をタイトルとします。
 ;;
 ;; add-keys-to-headword
-;;     ���Ƥθ���������ޤ�Ƹ��Ф������������� t �����ꤷ�Ʋ���
-;;     �����±Ѽ���򸡺�������ˡ����겾̾��ޤ�ƽ��Ϥ��������
-;;     �Ѥ��ޤ���
+;;     全ての検索キーを含めて見出し語を構成する場合に t に設定して下さ
+;;     い。和英辞書を検索する場合に、振り仮名も含めて出力する場合に利
+;;     用します。
 ;;
 ;; strategy
-;;     sdicf.el ���̤��Ƽ���򸡺�������� strategy ����ꤷ�ޤ�����ά
-;;     �������ϡ�sdicf.el �μ�ưȽ��ˤ�ä����Ф줿 strategy �����
-;;     ���ޤ���
+;;     sdicf.el を通して辞書を検索する時の strategy を指定します。省略
+;;     した場合は、sdicf.el の自動判定によって選ばれた strategy を使用
+;;     します。
 
 
 ;;; Note;
 
-;; sdicf.el �� SDIC �����μ���򸡺����뤿��Υ饤�֥��Ǥ������줾��
-;; �ΰ㤤�ϼ����̤�Ǥ���3����� strategy �����ݡ��Ȥ���Ƥ��ޤ���
+;; sdicf.el は SDIC 形式の辞書を検索するためのライブラリです。それぞれ
+;; の違いは次の通りです。3種類の strategy がサポートされています。
 ;;
 ;; `direct'
-;;     ����ǡ��������ƥ�����ɤ߹���Ǥ��鸡����Ԥ��ޤ�����������
-;;     ��ɤ�ɬ�פȤ��ޤ��󤬡����̤Υ��꤬ɬ�פˤʤ�ޤ���
+;;     辞書データを全てメモリに読み込んでから検索を行います。外部コマ
+;;     ンドを必要としませんが、大量のメモリが必要になります。
 ;;
 ;; `grep'
-;;     fgrep �����Ѥ��Ƹ�����Ԥ��ޤ���
+;;     fgrep を利用して検索を行います。
 ;;
 ;; `array'
-;;     array �����Ѥ��Ƹ�����Ԥ��ޤ�������� index file �����������
-;;     ���Ƥ����Ƥ��鸡����Ԥ��ޤ��Τǡ���®�˸�������ǽ�Ǥ�����������
-;;     index file �ϼ����3�����٤��礭���ˤʤ�ޤ���
+;;     array を利用して検索を行います。辞書の index file を事前に生成
+;;     しておいてから検索を行いますので、高速に検索が可能です。しかし、
+;;     index file は辞書の3倍程度の大きさになります。
 ;;
-;; ���Ū�����Ϥμ���򸡺�������� `grep' ����Ŭ�Ǥ��礦����������
-;; 5MByte ����礭������ξ��� `array' �����Ѥ��θ���٤����Ȼפ���
-;; ����
+;; 比較的小規模の辞書を検索する場合は `grep' が最適でしょう。しかし、
+;; 5MByte より大きい辞書の場合は `array' の利用を考慮すべきだと思いま
+;; す。
 ;;
-;; SDIC �����μ���ι�¤�ˤĤ��Ƥϡ�sdic.texi �򻲾Ȥ��Ƥ���������
+;; SDIC 形式の辞書の構造については、sdic.texi を参照してください。
 
 
-;;; �饤�֥���������
+;;; ライブラリ定義情報
 (require 'sdic)
 (require 'sdicf)
 (provide 'sdicf-client)
@@ -114,7 +114,7 @@
 
 
 ;;;----------------------------------------------------------------------
-;;;		����
+;;;		本体
 ;;;----------------------------------------------------------------------
 
 (defun sdicf-client-init-dictionary (file-name &rest option-list)
@@ -147,13 +147,13 @@
 
 (defun sdicf-client-search-entry (dic string &optional search-type) "\
 Function to search word with look or grep, and write results to current buffer.
-search-type ���ͤˤ�äƼ��Τ褦��ư����ѹ����롣
-    nil    : �������׸���
-    t      : �������׸���
-    lambda : �������׸���
-    0      : ��ʸ����
-������̤Ȥ��Ƹ��Ĥ��ä����Ф���򥭡��Ȥ����������ʸ����Ƭ�� point ���ͤȤ���
-Ϣ��������֤���
+search-type の値によって次のように動作を変更する。
+    nil    : 前方一致検索
+    t      : 後方一致検索
+    lambda : 完全一致検索
+    0      : 全文検索
+検索結果として見つかった見出し語をキーとし、その定義文の先頭の point を値とする
+連想配列を返す。
 "
   (let ((case-fold-search t) list)
     (mapcar (if (get dic 'add-keys-to-headword)
