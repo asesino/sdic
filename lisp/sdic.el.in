@@ -1,5 +1,4 @@
 ;; sdic.el ---- -*- Emacs-Lisp -*- Program to view dictionary.
-;; $Id$
 
 ;; Copyright (C) 1998,99 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 

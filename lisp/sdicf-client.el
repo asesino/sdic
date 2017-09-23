@@ -1,5 +1,4 @@
 ;; sdicf-client.el ---- -*- Emacs-Lisp -*- Library to search SDIC form dictionary.
-;; $Id$
 
 ;; Copyright (C) 1998,99 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 

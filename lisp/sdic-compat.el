@@ -1,5 +1,4 @@
 ;; sdic-compat.el ---- -*- Emacs-Lisp -*- Library to search COMPAT format dictionary.
-;; $Id$
 
 ;; Copyright (C) 1998,99 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 

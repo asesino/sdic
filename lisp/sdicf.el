@@ -1,5 +1,4 @@
 ;;; sdicf.el --- Search library for SDIC format dictionary
-;;; $Id$
 
 ;; Copyright (C) 1999 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 

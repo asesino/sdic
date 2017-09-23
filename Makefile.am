@@ -1,6 +1,5 @@
 # -*- Makefile -*-
 #
-# $Id$
 #
 EXTRA_DIST = install.el texi/sdic.texi contrib/edict.perl contrib/eijirou.perl contrib/gene.perl contrib/jgene.perl
 DISTCLEANFILES = install.el texi/sdic.info

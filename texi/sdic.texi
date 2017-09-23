@@ -1,5 +1,4 @@
 \input texinfo   @c -*-texinfo-*-
-@c $Id$
 @c %**start of header
 @setfilename sdic.info
 @settitle SDIC Reference Manual
@@ -487,7 +486,7 @@ SDIC形式の辞書を array を利用して検索するためには、以下の
 @enumerate
 @item
 array は、SUFARY に附属している対話型全文検索プログラムです。SUFARY につ
-いては、@file{http://nais.to/~yto/tools/sufary/} を参照して下さ
+いては、@file{http://cactus.aist-nara.ac.jp/lab/nlt/ss/} を参照して下さ
 い。検索対象のテキストの索引を事前に作成しておくタイプの検索プログラムな
 ので、grep などよりも高速な検索が可能です。
 
@@ -804,8 +803,8 @@ UNIX 環境で使用される場合は、SDIC形式に変換して、SUFARY を�
 SDIC は、2つの辞書の形式をサポートしている。
 
 @menu
-* COMPAT Format::       COMPAT 形式
-* SDIC Format::         SDIC 形式
+* COMPAT Format::       COMPAT形式
+* SDIC Format::         SDIC形式
 @end menu
 
 
@@ -831,7 +830,7 @@ char     := [^\t\n]
 
 
 
-@node SDIC Format, , COMPAT Format, Dictionary Format
+@node SDIC Format, History, COMPAT Format, Dictionary Format
 @comment  node-name,  next,  previous,  up
 @section SDIC 形式
 
@@ -888,7 +887,7 @@ char_lf  := char | '&lf;'
 ば、次のようなエントリが考えられる。
 
 @example
-<H>go @{動-1@}</H><K>go</K>行く
+<H>go {動-1}</H><K>go</K>行く
 @end example
 
 この例では、見出し語にその語の品詞情報が含まれている。このような品詞情報

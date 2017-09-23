@@ -1,5 +1,4 @@
 #
-# $Id$
 #
 AC_INIT(lisp/stem.el)
 AM_INIT_AUTOMAKE(sdic, 2.1.3)
