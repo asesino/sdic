@@ -1,0 +1,58 @@
+# project
+autom4te.cache
+configure
+# autotools
+Makefile.in
+aclocal.m4
+confdefs.h
+configure.ac
+
+# emacs
+*~
+.*~
+\#*\#
+*.elc
+.\#*
+auto-save-list
+# libre office
+.~lock.*#
+# MacOS
+.DS_Store
+.Trashes
+.Spotlight-V100
+._*
+# Windows
+*.sw[po]
+Thumbs.db
+Desktop.ini
+# Subversion
+.svn/
+# Mercurial
+/.hg/*
+*/.hg/*
+.hgignore
+# tags
+TAGS
+tags
+# archives
+*.dmg
+*.xpi
+*.gem
+*.egg
+*.deb
+*.rpm
+*.7z
+*.jar
+*.rar
+*.zip
+*.gz
+*.bzip
+*.xz
+*.lzma
+*.iso
+*.tar
+# common lisp
+*.fas
+*.fasl
+*.lib
+*.lx64fsl
